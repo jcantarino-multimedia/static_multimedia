@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>Estantería Animada de Libros</title>
+    <title>Biblioteca</title>
     <style>
         /* Global Reset */
         * {
@@ -78,7 +78,7 @@
             box-shadow: 0 14px 6px rgba(0,0,0,0.2);
             padding: 1rem;
             position: relative;
-            clip-path: inset(19px 16px 0px 16px);
+            clip-path: inset(19px 16px 162px 16px);
         }
 
         .shelf-title {
@@ -92,6 +92,9 @@
             gap: 0.2rem;
             margin-top: 1rem;
             margin-left: 3rem;
+            margin-right: 3rem;
+
+
         }
 
         /* Single Book as a spine */
@@ -106,6 +109,7 @@
             box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
             transform-origin: bottom;
             margin-bottom: 10px; /* a bit of spacing from shelf bottom */
+            margin-top: 25px;
             transition: transform 0.2s ease;
 
             align-items: center;
