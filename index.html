@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Estantería Animada de Libros</title>
+    <style>
+        /* Global Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: #fafafa;
+            overflow-x: hidden;
+        }
+
+        /* Header & Form */
+        .header {
+            background-color: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        h1, h2 {
+            margin: 0.5rem 1rem;
+            color: #343a40;
+        }
+
+        .form-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        label {
+            display: inline-block;
+            width: 90px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 180px;
+            padding: 0.4rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button[type="submit"] {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            opacity: 0.9;
+        }
+
+        /* Bookshelf Container */
+        .bookshelf-container {
+            margin: 10rem auto;
+            max-width: 1000px;
+            min-height: 600px;
+            background: url("https://img.freepik.com/free-vector/isolated-wood-shelf-cartoon_1308-120847.jpg") ;
+            background-size: cover;
+
+            box-shadow: 0 14px 6px rgba(0,0,0,0.2);
+            padding: 1rem;
+            position: relative;
+            clip-path: inset(19px 16px 0px 16px);
+        }
+
+        .shelf-title {
+            color:transparent;
+        }
+
+        .bookshelf {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 0.2rem;
+            margin-top: 1rem;
+            margin-left: 3rem;
+        }
+
+        /* Single Book as a spine */
+        .book {
+            width: 40px;
+            height: 160px;
+            border-radius: 3px 3px 0 0;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            color: #fff;
+            box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
+            transform-origin: bottom;
+            margin-bottom: 10px; /* a bit of spacing from shelf bottom */
+            transition: transform 0.2s ease;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+        .book-title {
+            transform: rotate(-90deg); /* Rotate only the text */
+            white-space: nowrap; /* Prevents text from wrapping */
+        }
+
+
+        .book:hover {
+            transform: scale(1.6) translateY(2.2rem);
+            z-index: 1;
+        }
+
+
+        .book-info {
+            text-align: center;
+            font-size: 0.35rem;
+            padding-top:2.3rem;
+        }
+
+        .book-title {
+            font-size: 0.7rem;
+            line-height: 1.1rem;
+            word-wrap: break-word;
+        }
+
+        .book-author {
+            padding-top: 3.3rem;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 1.2;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Estantería de Libros con Colores y Animación</h1>
+    <h2>Agregar un Nuevo Libro</h2>
+    <form id="crear-libro-form" class="form-section">
+        <div>
+            <label for="titulo">Título:</label>
+            <input type="text" id="titulo" required />
+        </div>
+        <div>
+            <label for="autor">Autor:</label>
+            <input type="text" id="autor" required />
+        </div>
+        <div>
+            <label for="anio">Año:</label>
+            <input type="number" id="anio" required />
+        </div>
+        <button type="submit">Agregar</button>
+    </form>
+</div>
+
+<div class="bookshelf-container">
+    <div class="shelf-title">Mi Colección</div>
+    <div class="bookshelf" id="bookshelf"></div>
+</div>
+
+<script>
+    const bookshelf = document.getElementById('bookshelf');
+    const formCrearLibro = document.getElementById('crear-libro-form');
+
+    // Cargar todos los libros al iniciar
+    window.addEventListener('DOMContentLoaded', cargarLibros);
+
+    // Random color generator for the book spine
+    function getRandomColor() {
+        const colors = [
+            "#d35400", "#8e44ad", "#2ecc71", "#2980b9",
+            "#c0392b", "#16a085", "#f39c12", "#7f8c8d",
+            "#e74c3c", "#9b59b6", "#1abc9c", "#2c3e50"
+        ];
+        const index = Math.floor(Math.random() * colors.length);
+        return colors[index];
+    }
+
+    async function cargarLibros() {
+        bookshelf.innerHTML = '';
+
+        try {
+            const response = await fetch('/api/libros');
+            if (!response.ok) {
+                console.error('Error al obtener la lista de libros');
+                return;
+            }
+            const libros = await response.json();
+
+            // Renderizar con bucle for
+            for (let i = 0; i < libros.length; i++) {
+                renderizarLibro(libros[i]);
+            }
+        } catch (error) {
+            console.error('Error en la petición:', error);
+        }
+    }
+
+    // Crear libro en la API
+    async function crearLibro(titulo, autor, anioPublicacion) {
+        try {
+            const response = await fetch('/api/libros', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    titulo: titulo,
+                    autor: autor,
+                    anioPublicacion: anioPublicacion
+                })
+            });
+            if (!response.ok) {
+                console.error('Error al crear el libro');
+                return null;
+            }
+            const nuevoLibro = await response.json();
+            return nuevoLibro;
+        } catch (error) {
+            console.error('Error en la petición:', error);
+            return null;
+        }
+    }
+
+    // Eliminar libro en la API
+    async function eliminarLibro(id) {
+        try {
+            const response = await fetch(`/api/libros/${id}`, {
+                method: 'DELETE'
+            });
+            if (response.status === 204) {
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error en la petición:', error);
+            return false;
+        }
+    }
+
+    // Renderizar un libro como un "spine" colorido
+    function renderizarLibro(libro) {
+        const bookDiv = document.createElement('div');
+        bookDiv.className = 'book';
+        bookDiv.style.backgroundColor = getRandomColor();
+
+        // Botón de eliminar
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = 'x';
+        deleteBtn.addEventListener('click', async () => {
+            const exito = await eliminarLibro(libro.id);
+            if (exito) {
+                bookDiv.remove();
+            } else {
+                alert('No se pudo eliminar el libro');
+            }
+        });
+        bookDiv.appendChild(deleteBtn);
+
+        const bookInfo = document.createElement('div');
+        bookInfo.className = 'book-info';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'book-title';
+        titleEl.textContent = libro.titulo;
+
+        const authorEl = document.createElement('div');
+        authorEl.className = 'book-author';
+        authorEl.textContent = libro.autor;
+
+        const yearEl = document.createElement('div');
+        yearEl.className = 'book-year';
+        yearEl.textContent = libro.anioPublicacion;
+
+        bookInfo.appendChild(titleEl);
+        bookInfo.appendChild(authorEl);
+        bookInfo.appendChild(yearEl);
+
+        bookDiv.appendChild(bookInfo);
+        bookshelf.appendChild(bookDiv);
+    }
+
+    // Manejar el envío del formulario
+    formCrearLibro.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const titulo = document.getElementById('titulo').value;
+        const autor = document.getElementById('autor').value;
+        const anio = parseInt(document.getElementById('anio').value, 10);
+
+        const libroCreado = await crearLibro(titulo, autor, anio);
+        if (libroCreado) {
+            formCrearLibro.reset();
+            renderizarLibro(libroCreado);
+        }
+    });
+</script>
+</body>
+</html>
