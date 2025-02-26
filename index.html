@@ -54,7 +54,8 @@
             border-radius: 4px;
         }
 
-        button[type="submit"] {
+        button[type="submit"],
+        button#offset-btn {
             background-color: #28a745;
             color: #fff;
             border: none;
@@ -63,8 +64,22 @@
             cursor: pointer;
         }
 
-        button[type="submit"]:hover {
+        button#offset-btn {
+            background-color: #007bff;
+        }
+
+        button[type="submit"]:hover,
+        button#offset-btn:hover {
             opacity: 0.9;
+        }
+
+        /* Offset Section */
+        .offset-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 1rem;
         }
 
         /* Bookshelf Container */
@@ -72,9 +87,8 @@
             margin: 10rem auto;
             max-width: 1000px;
             min-height: 600px;
-            background: url("https://img.freepik.com/free-vector/isolated-wood-shelf-cartoon_1308-120847.jpg") ;
+            background: url("https://img.freepik.com/free-vector/isolated-wood-shelf-cartoon_1308-120847.jpg");
             background-size: cover;
-
             box-shadow: 0 14px 6px rgba(0,0,0,0.2);
             padding: 1rem;
             position: relative;
@@ -93,8 +107,6 @@
             margin-top: 1rem;
             margin-left: 3rem;
             margin-right: 3rem;
-
-
         }
 
         /* Single Book as a spine */
@@ -111,7 +123,6 @@
             margin-bottom: 10px; /* a bit of spacing from shelf bottom */
             margin-top: 25px;
             transition: transform 0.2s ease;
-
             align-items: center;
             justify-content: center;
         }
@@ -121,17 +132,15 @@
             white-space: nowrap; /* Prevents text from wrapping */
         }
 
-
         .book:hover {
             transform: scale(1.6) translateY(2.2rem);
             z-index: 1;
         }
 
-
         .book-info {
             text-align: center;
             font-size: 0.35rem;
-            padding-top:2.3rem;
+            padding-top: 2.3rem;
         }
 
         .book-title {
@@ -185,6 +194,14 @@
         </div>
         <button type="submit">Agregar</button>
     </form>
+    <!-- New Offset Endpoint Field -->
+    <!-- Sección de Filtrado debajo del Formulario de Post -->
+    <div class="offset-section">
+        <label for="offset-endpoint">Filtrar:</label>
+        <input type="text" id="offset-endpoint" placeholder="/api/libros?offset=..." />
+        <button type="button" id="offset-btn">Cargar Libros</button>
+    </div>
+
 </div>
 
 <div class="bookshelf-container">
@@ -313,7 +330,7 @@
         bookshelf.appendChild(bookDiv);
     }
 
-    // Manejar el envío del formulario
+    // Manejar el envío del formulario para crear un libro
     formCrearLibro.addEventListener('submit', async (event) => {
         event.preventDefault();
         const titulo = document.getElementById('titulo').value;
@@ -326,6 +343,46 @@
             renderizarLibro(libroCreado);
         }
     });
+
+    // Manejar la consulta del offset endpoint
+    const offsetInput = document.getElementById('offset-endpoint');
+    const offsetBtn = document.getElementById('offset-btn');
+    offsetBtn.addEventListener('click', async () => {
+        const endpoint = offsetInput.value.trim();
+        if (!endpoint) {
+            alert('Por favor, ingrese un endpoint válido');
+            return;
+        }
+        try {
+            const response = await fetch(endpoint);
+            if (!response.ok) {
+                console.error('Error al obtener la lista de libros desde el offset endpoint');
+                alert('Error al obtener la lista de libros');
+                return;
+            }
+
+            // Await response.json() to properly parse the JSON
+            const data = await response.json();
+            console.log(data);  // Debugging: Check what data is received
+
+            // Limpiar la estantería antes de agregar los nuevos libros
+            bookshelf.innerHTML = '';
+
+            // Verificar si es un solo libro u una lista
+            if (Array.isArray(data)) {
+                data.forEach(libro => renderizarLibro(libro));
+            } else if (data && typeof data === 'object') {
+                renderizarLibro(data);
+            } else {
+                console.error('Formato de respuesta inesperado', data);
+                alert('Formato de respuesta inesperado');
+            }
+        } catch (error) {
+            console.error('Error en la petición del offset endpoint:', error);
+            alert('Error en la petición del offset endpoint');
+        }
+    });
+
 </script>
 </body>
 </html>
