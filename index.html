@@ -5,84 +5,68 @@
     <title>Biblioteca</title>
     <style>
         /* Global Reset */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #fafafa; overflow-x: hidden; }
 
-        body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: #fafafa;
-            overflow-x: hidden;
-        }
-
-        /* Header & Form */
-        .header {
-            background-color: #fff;
-            padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
+        /* Contenedor del modal de autenticación */
+        .auth-container {
+            position: fixed;
             top: 0;
-            z-index: 10;
-        }
-
-        h1, h2 {
-            margin: 0.5rem 1rem;
-            color: #343a40;
-        }
-
-        .form-section {
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
+            justify-content: center;
             align-items: center;
-            margin-top: 0.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
         }
-
-        label {
-            display: inline-block;
-            width: 90px;
-            font-weight: bold;
+        .auth-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+            width: 300px;
+            text-align: center;
         }
-
-        input[type="text"],
-        input[type="number"] {
-            width: 180px;
-            padding: 0.4rem;
+        .auth-box h2 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .auth-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
         }
-
-        button[type="submit"],
-        button#offset-btn {
-            background-color: #28a745;
-            color: #fff;
+        .auth-box button {
+            width: 100%;
+            padding: 10px;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
         }
-
-        button#offset-btn {
-            background-color: #007bff;
-        }
-
-        button[type="submit"]:hover,
-        button#offset-btn:hover {
+        .auth-box button:hover {
             opacity: 0.9;
         }
-
-        /* Offset Section */
-        .offset-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            align-items: center;
-            margin-top: 1rem;
+        .toggle-auth {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #007bff;
+            cursor: pointer;
         }
+        .hidden { display: none; }
 
-        /* Bookshelf Container */
+        /* Encabezado y secciones protegidas */
+        .header { background-color: #fff; padding: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 10; }
+        h1 { text-align: center; color: #343a40; }
+        .protected { display: none; }
+
+        /* Estilos de la biblioteca */
         .bookshelf-container {
             margin: 10rem auto;
             max-width: 1000px;
@@ -94,22 +78,14 @@
             position: relative;
             clip-path: inset(19px 16px 162px 16px);
         }
-
-        .shelf-title {
-            color:transparent;
-        }
-
+        .shelf-title { color: transparent; }
         .bookshelf {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
             gap: 0.2rem;
-            margin-top: 1rem;
-            margin-left: 3rem;
-            margin-right: 3rem;
+            margin: 1rem 3rem;
         }
-
-        /* Single Book as a spine */
         .book {
             width: 40px;
             height: 160px;
@@ -117,68 +93,40 @@
             position: relative;
             cursor: pointer;
             display: flex;
-            color: #fff;
-            box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
-            transform-origin: bottom;
-            margin-bottom: 10px; /* a bit of spacing from shelf bottom */
-            margin-top: 25px;
-            transition: transform 0.2s ease;
             align-items: center;
             justify-content: center;
-        }
-
-        .book-title {
-            transform: rotate(-90deg); /* Rotate only the text */
-            white-space: nowrap; /* Prevents text from wrapping */
-        }
-
-        .book:hover {
-            transform: scale(1.6) translateY(2.2rem);
-            z-index: 1;
-        }
-
-        .book-info {
-            text-align: center;
-            font-size: 0.35rem;
-            padding-top: 2.3rem;
-        }
-
-        .book-title {
-            font-size: 0.7rem;
-            line-height: 1.1rem;
-            word-wrap: break-word;
-        }
-
-        .book-author {
-            padding-top: 3.3rem;
-        }
-
-        .delete-btn {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            background-color: #dc3545;
             color: #fff;
-            border: none;
-            width: 20px;
-            height: 20px;
-            font-size: 0.7rem;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 1.2;
-            cursor: pointer;
-            opacity: 0.8;
+            box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            transition: transform 0.2s ease;
+            transform-origin: bottom;
         }
-
-        .delete-btn:hover {
-            opacity: 1;
-        }
+        .book:hover { transform: scale(1.6) translateY(2.2rem); z-index: 1; }
+        .book-title { transform: rotate(-90deg); white-space: nowrap; font-size: 0.7rem; }
+        .book-info { text-align: center; font-size: 0.35rem; padding-top: 2.3rem; }
+        .book-author { padding-top: 3.3rem; }
     </style>
 </head>
 <body>
-<div class="header">
+<!-- Modal de autenticación -->
+<div class="auth-container" id="auth-container">
+    <div class="auth-box">
+        <h2 id="auth-title">Iniciar Sesión</h2>
+        <input type="text" id="auth-username" placeholder="Usuario" required />
+        <input type="password" id="auth-password" placeholder="Contraseña" required />
+        <button id="auth-btn">Ingresar</button>
+        <p class="toggle-auth" id="toggle-auth">¿No tienes cuenta? Regístrate</p>
+    </div>
+</div>
+
+<!-- Contenido de la biblioteca (oculto hasta que el usuario inicie sesión) -->
+<div class="header protected" id="header">
     <h1>Biblioteca</h1>
-    <h2>Agregar un Nuevo Libro</h2>
+</div>
+<div class="protected" id="main-content">
+    <!-- Formulario para Agregar Libros -->
+    <h2>Donar un Nuevo Libro</h2>
     <form id="crear-libro-form" class="form-section">
         <div>
             <label for="titulo">Título:</label>
@@ -194,42 +142,75 @@
         </div>
         <button type="submit">Agregar</button>
     </form>
-    <!-- New Offset Endpoint Field -->
-    <!-- Sección de Filtrado debajo del Formulario de Post -->
-    <div class="offset-section">
+    <!-- Sección de Filtrado -->
+    <div class="offset-section" id="offset-section">
         <label for="offset-endpoint">Filtrar:</label>
         <input type="text" id="offset-endpoint" placeholder="/api/libros?offset=..." />
         <button type="button" id="offset-btn">Cargar Libros</button>
     </div>
-
-</div>
-
-<div class="bookshelf-container">
-    <div class="shelf-title">Mi Colección</div>
-    <div class="bookshelf" id="bookshelf"></div>
+    <!-- Estantería de libros -->
+    <div class="bookshelf-container" id="bookshelf-container">
+        <div class="shelf-title">Mi Colección</div>
+        <div class="bookshelf" id="bookshelf"></div>
+    </div>
 </div>
 
 <script>
+    let userLoggeado = null;
+    let isLoginMode = true;
+    const authContainer = document.getElementById('auth-container');
+    const authTitle = document.getElementById('auth-title');
+    const authBtn = document.getElementById('auth-btn');
+    const toggleAuth = document.getElementById('toggle-auth');
+    const authUsername = document.getElementById('auth-username');
+    const authPassword = document.getElementById('auth-password');
+    const protectedElements = document.querySelectorAll('.protected');
+
+    // Alternar entre login y registro y vaciar el formulario
+    toggleAuth.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        authTitle.textContent = isLoginMode ? "Iniciar Sesión" : "Registrarse";
+        authBtn.textContent = isLoginMode ? "Ingresar" : "Registrar";
+        toggleAuth.textContent = isLoginMode ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión";
+        // Vaciar campos
+        authUsername.value = "";
+        authPassword.value = "";
+    });
+
+    // Manejo de Login/Registro
+    authBtn.addEventListener('click', async () => {
+        const username = authUsername.value;
+        const password = authPassword.value;
+        const endpoint = isLoginMode ? '/api/user/login' : '/api/user/register';
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            });
+            if (response.ok) {
+                userLoggeado = await response.json();
+                alert(isLoginMode ? 'Login exitoso' : 'Registro exitoso. Ahora inicia sesión.');
+                // Si es login, ocultar modal y mostrar contenido protegido
+                if (isLoginMode) {
+                    authContainer.classList.add('hidden');
+                    protectedElements.forEach(el => el.style.display = 'block');
+                    cargarLibros();
+                }
+            } else {
+                alert('Error en la autenticación. Error: ' + JSON.stringify(response.status));
+            }
+        } catch (error) {
+            console.error('Error en la autenticación:', error);
+        }
+    });
+
     const bookshelf = document.getElementById('bookshelf');
     const formCrearLibro = document.getElementById('crear-libro-form');
 
-    // Cargar todos los libros al iniciar
-    window.addEventListener('DOMContentLoaded', cargarLibros);
-
-    // Random color generator for the book spine
-    function getRandomColor() {
-        const colors = [
-            "#d35400", "#8e44ad", "#2ecc71", "#2980b9",
-            "#c0392b", "#16a085", "#f39c12", "#7f8c8d",
-            "#e74c3c", "#9b59b6", "#1abc9c", "#2c3e50"
-        ];
-        const index = Math.floor(Math.random() * colors.length);
-        return colors[index];
-    }
-
     async function cargarLibros() {
+        if (!userLoggeado) return;
         bookshelf.innerHTML = '';
-
         try {
             const response = await fetch('/api/libros');
             if (!response.ok) {
@@ -237,114 +218,155 @@
                 return;
             }
             const libros = await response.json();
-
-            // Renderizar con bucle for
-            for (let i = 0; i < libros.length; i++) {
-                renderizarLibro(libros[i]);
-            }
+            libros.forEach(libro => renderizarLibro(libro));
         } catch (error) {
             console.error('Error en la petición:', error);
         }
     }
 
-    // Crear libro en la API
-    async function crearLibro(titulo, autor, anioPublicacion) {
+    async function crearLibro(titulo, autor, anio) {
         try {
             const response = await fetch('/api/libros', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    titulo: titulo,
-                    autor: autor,
-                    anioPublicacion: anioPublicacion
-                })
+                body: JSON.stringify({ titulo, autor, anioPublicacion: anio })
             });
-            if (!response.ok) {
-                console.error('Error al crear el libro');
-                return null;
+            if (response.ok) {
+                return await response.json();
             }
-            const nuevoLibro = await response.json();
-            return nuevoLibro;
+            return null;
         } catch (error) {
-            console.error('Error en la petición:', error);
+            console.error('Error al crear el libro:', error);
             return null;
         }
     }
 
-    // Eliminar libro en la API
-    async function eliminarLibro(id) {
-        try {
-            const response = await fetch(`/api/libros/${id}`, {
-                method: 'DELETE'
-            });
-            if (response.status === 204) {
-                return true;
-            }
-            return false;
-        } catch (error) {
-            console.error('Error en la petición:', error);
-            return false;
-        }
-    }
-
-    // Renderizar un libro como un "spine" colorido
     function renderizarLibro(libro) {
         const bookDiv = document.createElement('div');
         bookDiv.className = 'book';
         bookDiv.style.backgroundColor = getRandomColor();
 
-        // Botón de eliminar
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.textContent = 'x';
-        deleteBtn.addEventListener('click', async () => {
-            const exito = await eliminarLibro(libro.id);
-            if (exito) {
-                bookDiv.remove();
-            } else {
-                alert('No se pudo eliminar el libro');
-            }
-        });
-        bookDiv.appendChild(deleteBtn);
+        // Si el libro está alquilado, mostrar indicador; de lo contrario, botón para alquilar
+        if (libro.user) {
+            const alquiladoIcon = document.createElement('div');
+            alquiladoIcon.textContent = 'Alquilado';
+            alquiladoIcon.style.fontSize = '0.5rem';
+            bookDiv.appendChild(alquiladoIcon);
+        } else {
+            const alquilarBtn = document.createElement('button');
+            alquilarBtn.textContent = 'Alquilar';
+            alquilarBtn.style.fontSize = '0.7rem';
+            alquilarBtn.addEventListener('click', async () => {
+                const res = await fetch(`/api/alquiler/alquilar?libroId=${libro.id}&userId=${userLoggeado.id}`, { method: 'POST' });
+                if (res.ok) {
+                    alert('Libro alquilado');
+                    cargarLibros();
+                } else {
+                    alert('Error al alquilar el libro');
+                }
+            });
+            bookDiv.appendChild(alquilarBtn);
+        }
 
-        const bookInfo = document.createElement('div');
-        bookInfo.className = 'book-info';
-
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'book-info';
         const titleEl = document.createElement('div');
         titleEl.className = 'book-title';
         titleEl.textContent = libro.titulo;
-
         const authorEl = document.createElement('div');
         authorEl.className = 'book-author';
         authorEl.textContent = libro.autor;
-
         const yearEl = document.createElement('div');
         yearEl.className = 'book-year';
         yearEl.textContent = libro.anioPublicacion;
-
-        bookInfo.appendChild(titleEl);
-        bookInfo.appendChild(authorEl);
-        bookInfo.appendChild(yearEl);
-
-        bookDiv.appendChild(bookInfo);
+        infoDiv.appendChild(titleEl);
+        infoDiv.appendChild(authorEl);
+        infoDiv.appendChild(yearEl);
+        bookDiv.appendChild(infoDiv);
         bookshelf.appendChild(bookDiv);
     }
 
-    // Manejar el envío del formulario para crear un libro
+    function getRandomColor() {
+        const colors = ["#d35400", "#8e44ad", "#2ecc71", "#2980b9", "#c0392b", "#16a085", "#f39c12", "#7f8c8d", "#e74c3c", "#9b59b6", "#1abc9c", "#2c3e50"];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+
     formCrearLibro.addEventListener('submit', async (event) => {
         event.preventDefault();
         const titulo = document.getElementById('titulo').value;
         const autor = document.getElementById('autor').value;
         const anio = parseInt(document.getElementById('anio').value, 10);
-
-        const libroCreado = await crearLibro(titulo, autor, anio);
-        if (libroCreado) {
+        const nuevoLibro = await crearLibro(titulo, autor, anio);
+        if (nuevoLibro) {
             formCrearLibro.reset();
-            renderizarLibro(libroCreado);
+            renderizarLibro(nuevoLibro);
         }
     });
+    function renderizarLibro(libro) {
+        const bookDiv = document.createElement('div');
+        bookDiv.className = 'book';
+        bookDiv.style.backgroundColor = getRandomColor();
 
-    // Manejar la consulta del offset endpoint
+        // Crear un contenedor para el icono de acción (alquilar o devolver)
+        const actionIcon = document.createElement('span');
+        actionIcon.style.cursor = 'pointer';
+        actionIcon.style.position = 'absolute';
+        actionIcon.style.bottom = '3px';
+        actionIcon.style.right = '5px';
+        actionIcon.style.fontSize = '1.2rem';
+
+        // Si el libro NO está alquilado y hay un usuario logueado, mostrar icono para alquilar
+        if (!libro.user) {
+            if (userLoggeado) {
+                actionIcon.textContent = '🛒';  // Icono para alquilar
+                actionIcon.title = 'Alquilar';
+                actionIcon.addEventListener('click', async () => {
+                    const res = await fetch(`/api/alquiler/alquilar?libroId=${libro.id}&userId=${userLoggeado.id}`, { method: 'POST' });
+                    if (res.ok) {
+                        alert('Libro alquilado');
+                        cargarLibros();
+                    } else {
+                        alert('Error al alquilar el libro');
+                    }
+                });
+                bookDiv.appendChild(actionIcon);
+            }
+        } else {
+            // El libro ya está alquilado
+            // Solo el usuario que lo alquiló puede devolverlo
+            if (userLoggeado && libro.user.id === userLoggeado.id) {
+                actionIcon.textContent = '↩'; // Icono para devolver
+                actionIcon.title = 'Devolver';
+                actionIcon.addEventListener('click', async () => {
+                    const res = await fetch(`/api/alquiler/devolver?libroId=${libro.id}&userId=${userLoggeado.id}`, { method: 'POST' });
+                    if (res.ok) {
+                        alert('Libro devuelto');
+                        cargarLibros();
+                    } else {
+                        alert('Error al devolver el libro');
+                    }
+                });
+                bookDiv.appendChild(actionIcon);
+            }
+        }
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'book-info';
+        const titleEl = document.createElement('div');
+        titleEl.className = 'book-title';
+        titleEl.textContent = libro.titulo;
+        const authorEl = document.createElement('div');
+        authorEl.className = 'book-author';
+        authorEl.textContent = libro.autor;
+        const yearEl = document.createElement('div');
+        yearEl.className = 'book-year';
+        yearEl.textContent = libro.anioPublicacion;
+        infoDiv.appendChild(titleEl);
+        infoDiv.appendChild(authorEl);
+        infoDiv.appendChild(yearEl);
+        bookDiv.appendChild(infoDiv);
+        bookshelf.appendChild(bookDiv);
+    }
     const offsetInput = document.getElementById('offset-endpoint');
     const offsetBtn = document.getElementById('offset-btn');
     offsetBtn.addEventListener('click', async () => {
