@@ -8,17 +8,15 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #fafafa; overflow-x: hidden; }
 
-        /* Contenedor del modal de autenticación */
+        /* Modal de autenticación (sin cambios) */
         .auth-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.5);
             z-index: 100;
         }
         .auth-box {
@@ -29,36 +27,11 @@
             width: 300px;
             text-align: center;
         }
-        .auth-box h2 {
-            margin-bottom: 1rem;
-            color: #333;
-        }
-        .auth-box input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .auth-box button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            background: #007bff;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .auth-box button:hover {
-            opacity: 0.9;
-        }
-        .toggle-auth {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #007bff;
-            cursor: pointer;
-        }
+        .auth-box h2 { margin-bottom: 1rem; color: #333; }
+        .auth-box input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .auth-box button { width: 100%; padding: 10px; border: none; background: #007bff; color: white; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .auth-box button:hover { opacity: 0.9; }
+        .toggle-auth { margin-top: 10px; font-size: 14px; color: #007bff; cursor: pointer; }
         .hidden { display: none; }
 
         /* Encabezado y secciones protegidas */
@@ -68,44 +41,77 @@
 
         /* Estilos de la biblioteca */
         .bookshelf-container {
-            margin: 10rem auto;
-            max-width: 1000px;
-            min-height: 600px;
+            margin: 10rem auto; max-width: 1000px; min-height: 600px;
+            margin-top: -8rem;
+            margin-left: 20rem;
             background: url("https://img.freepik.com/free-vector/isolated-wood-shelf-cartoon_1308-120847.jpg");
-            background-size: cover;
-            box-shadow: 0 14px 6px rgba(0,0,0,0.2);
-            padding: 1rem;
-            position: relative;
+            background-size: cover; box-shadow: 0 14px 6px rgba(0,0,0,0.2);
+            padding: 1rem; position: relative;
             clip-path: inset(19px 16px 162px 16px);
         }
         .shelf-title { color: transparent; }
         .bookshelf {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            gap: 0.2rem;
-            margin: 1rem 3rem;
+            display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.2rem; margin: 1rem 3rem;
         }
         .book {
-            width: 40px;
-            height: 160px;
-            border-radius: 3px 3px 0 0;
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
-            margin-top: 25px;
-            margin-bottom: 10px;
-            transition: transform 0.2s ease;
-            transform-origin: bottom;
+            width: 40px; height: 160px; border-radius: 3px 3px 0 0; position: relative;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            color: #fff; box-shadow: 1px 2px 4px rgba(0,0,0,0.3); margin-top: 25px; margin-bottom: 10px;
+            transition: transform 0.2s ease; transform-origin: bottom;
         }
         .book:hover { transform: scale(1.6) translateY(2.2rem); z-index: 1; }
         .book-title { transform: rotate(-90deg); white-space: nowrap; font-size: 0.7rem; }
         .book-info { text-align: center; font-size: 0.35rem; padding-top: 2.3rem; }
         .book-author { padding-top: 3.3rem; }
+
+        /* Nuevo: Icono de perfil en la esquina superior derecha */
+        .profile-icon {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: url('https://via.placeholder.com/40') no-repeat center center;
+            background-size: cover;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 50;
+            display: none; /* Se muestra solo tras login */
+        }
+        /* Nuevo: Menú de perfil desplegable */
+        .profile-menu {
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            width: 250px;
+            max-height: 300px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0px 5px 10px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            display: none;
+            z-index: 50;
+        }
+        .profile-menu h3 {
+            background: #007bff;
+            color: white;
+            margin: 0;
+            padding: 10px;
+            text-align: center;
+        }
+        .profile-menu ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+        .profile-menu li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .profile-menu li:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
@@ -120,9 +126,81 @@
     </div>
 </div>
 
-<!-- Contenido de la biblioteca (oculto hasta que el usuario inicie sesión) -->
+<!-- Icono de perfil (aparece tras login) -->
+<div class="profile-icon" id="profile-icon"></div>
+<!-- Menú de perfil desplegable -->
+<div class="profile-menu" id="profile-menu">
+    <h3>Mi Perfil</h3>
+    <ul id="profile-list">
+        <!-- Aquí se mostrarán los libros actualmente alquilados y el historial -->
+        <li><strong>Alquilados:</strong></li>
+        <!-- Ejemplo de item: <li>Libro A</li> -->
+        <li><strong>Historial:</strong></li>
+        <!-- Ejemplo de item: <li>Libro B</li> -->
+    </ul>
+</div>
+
+<!-- Contenido de la biblioteca (protegido) -->
 <div class="header protected" id="header">
     <h1>Biblioteca</h1>
+    <!-- Icono del menú de usuario (aparece solo si está logueado) -->
+    <div id="user-menu-icon" class="protected" style="position: fixed; top: 10px; right: 10px; cursor: pointer; font-size: 1.5rem; z-index: 200;">
+        👤
+    </div>
+
+    <script>
+        // Función para mostrar/ocultar el menú de usuario
+        const userMenuIcon = document.getElementById('user-menu-icon');
+        const userMenu = document.getElementById('user-menu');
+        userMenuIcon.addEventListener('click', () => {
+            if (userMenu.style.display === 'none') {
+                userMenu.style.display = 'block';
+                cargarMenuUsuario();
+            } else {
+                userMenu.style.display = 'none';
+            }
+        });
+
+        // Función para cargar los datos del menú (rentas actuales e historial)
+        async function cargarMenuUsuario() {
+            if (!userLoggeado) return;
+            // Limpiar listas
+            document.getElementById('current-rentals').innerHTML = '';
+            document.getElementById('rental-history').innerHTML = '';
+
+            // Obtener libros alquilados actualmente
+            try {
+                const currentRes = await fetch(`/api/libros/porUsuario/${userLoggeado.id}`);
+                if (currentRes.ok) {
+                    const currentLibros = await currentRes.json();
+                    const currentList = document.getElementById('current-rentals');
+                    currentLibros.forEach(libro => {
+                        const li = document.createElement('li');
+                        li.textContent = libro.titulo + " (" + libro.autor + ")";
+                        currentList.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar los libros alquilados actualmente:', error);
+            }
+
+            // Obtener historial de alquiler
+            try {
+                const historyRes = await fetch(`/api/alquiler/historial?userId=${userLoggeado.id}`);
+                if (historyRes.ok) {
+                    const historial = await historyRes.json();
+                    const historyList = document.getElementById('rental-history');
+                    historial.forEach(libro => {
+                        const li = document.createElement('li');
+                        li.textContent = libro.titulo + " (" + libro.autor + ")";
+                        historyList.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar el historial de alquiler:', error);
+            }
+        }
+    </script>
 </div>
 <div class="protected" id="main-content">
     <!-- Formulario para Agregar Libros -->
@@ -165,6 +243,9 @@
     const authUsername = document.getElementById('auth-username');
     const authPassword = document.getElementById('auth-password');
     const protectedElements = document.querySelectorAll('.protected');
+    const profileIcon = document.getElementById('profile-icon');
+    const profileMenu = document.getElementById('profile-menu');
+    const profileList = document.getElementById('profile-list');
 
     // Alternar entre login y registro y vaciar el formulario
     toggleAuth.addEventListener('click', () => {
@@ -172,7 +253,6 @@
         authTitle.textContent = isLoginMode ? "Iniciar Sesión" : "Registrarse";
         authBtn.textContent = isLoginMode ? "Ingresar" : "Registrar";
         toggleAuth.textContent = isLoginMode ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión";
-        // Vaciar campos
         authUsername.value = "";
         authPassword.value = "";
     });
@@ -191,18 +271,24 @@
             if (response.ok) {
                 userLoggeado = await response.json();
                 alert(isLoginMode ? 'Login exitoso' : 'Registro exitoso. Ahora inicia sesión.');
-                // Si es login, ocultar modal y mostrar contenido protegido
                 if (isLoginMode) {
                     authContainer.classList.add('hidden');
                     protectedElements.forEach(el => el.style.display = 'block');
+                    profileIcon.style.display = 'block'; // Mostrar icono de perfil
                     cargarLibros();
+                    cargarPerfil(); // Cargar datos en el menú de perfil
                 }
             } else {
-                alert('Error en la autenticación. Error: ' + JSON.stringify(response.status));
+                alert('Error en la autenticación. (' + response.status + ')');
             }
         } catch (error) {
             console.error('Error en la autenticación:', error);
         }
+    });
+
+    // Toggle para mostrar/ocultar menú de perfil
+    profileIcon.addEventListener('click', () => {
+        profileMenu.style.display = profileMenu.style.display === 'block' ? 'none' : 'block';
     });
 
     const bookshelf = document.getElementById('bookshelf');
@@ -246,26 +332,45 @@
         bookDiv.className = 'book';
         bookDiv.style.backgroundColor = getRandomColor();
 
-        // Si el libro está alquilado, mostrar indicador; de lo contrario, botón para alquilar
-        if (libro.user) {
-            const alquiladoIcon = document.createElement('div');
-            alquiladoIcon.textContent = 'Alquilado';
-            alquiladoIcon.style.fontSize = '0.5rem';
-            bookDiv.appendChild(alquiladoIcon);
+        const actionIcon = document.createElement('span');
+        actionIcon.style.cursor = 'pointer';
+        actionIcon.style.position = 'absolute';
+        actionIcon.style.bottom = '3px';
+        actionIcon.style.right = '5px';
+        actionIcon.style.fontSize = '1.2rem';
+
+        if (!libro.user) {
+            if (userLoggeado) {
+                actionIcon.textContent = '🛒';
+                actionIcon.title = 'Alquilar';
+                actionIcon.addEventListener('click', async () => {
+                    const res = await fetch(`/api/alquiler/alquilar?libroId=${libro.id}&userId=${userLoggeado.id}`, { method: 'POST' });
+                    if (res.ok) {
+                        alert('Libro alquilado');
+                        cargarLibros();
+                        cargarPerfil();
+                    } else {
+                        alert('Error al alquilar el libro');
+                    }
+                });
+                bookDiv.appendChild(actionIcon);
+            }
         } else {
-            const alquilarBtn = document.createElement('button');
-            alquilarBtn.textContent = 'Alquilar';
-            alquilarBtn.style.fontSize = '0.7rem';
-            alquilarBtn.addEventListener('click', async () => {
-                const res = await fetch(`/api/alquiler/alquilar?libroId=${libro.id}&userId=${userLoggeado.id}`, { method: 'POST' });
-                if (res.ok) {
-                    alert('Libro alquilado');
-                    cargarLibros();
-                } else {
-                    alert('Error al alquilar el libro');
-                }
-            });
-            bookDiv.appendChild(alquilarBtn);
+            if (userLoggeado && libro.user.id === userLoggeado.id) {
+                actionIcon.textContent = '↩';
+                actionIcon.title = 'Devolver';
+                actionIcon.addEventListener('click', async () => {
+                    const res = await fetch(`/api/alquiler/devolver?libroId=${libro.id}&userId=${userLoggeado.id}`, { method: 'POST' });
+                    if (res.ok) {
+                        alert('Libro devuelto');
+                        cargarLibros();
+                        cargarPerfil();
+                    } else {
+                        alert('Error al devolver el libro');
+                    }
+                });
+                bookDiv.appendChild(actionIcon);
+            }
         }
 
         const infoDiv = document.createElement('div');
@@ -300,73 +405,46 @@
         if (nuevoLibro) {
             formCrearLibro.reset();
             renderizarLibro(nuevoLibro);
+            cargarPerfil();
         }
     });
-    function renderizarLibro(libro) {
-        const bookDiv = document.createElement('div');
-        bookDiv.className = 'book';
-        bookDiv.style.backgroundColor = getRandomColor();
 
-        // Crear un contenedor para el icono de acción (alquilar o devolver)
-        const actionIcon = document.createElement('span');
-        actionIcon.style.cursor = 'pointer';
-        actionIcon.style.position = 'absolute';
-        actionIcon.style.bottom = '3px';
-        actionIcon.style.right = '5px';
-        actionIcon.style.fontSize = '1.2rem';
-
-        // Si el libro NO está alquilado y hay un usuario logueado, mostrar icono para alquilar
-        if (!libro.user) {
-            if (userLoggeado) {
-                actionIcon.textContent = '🛒';  // Icono para alquilar
-                actionIcon.title = 'Alquilar';
-                actionIcon.addEventListener('click', async () => {
-                    const res = await fetch(`/api/alquiler/alquilar?libroId=${libro.id}&userId=${userLoggeado.id}`, { method: 'POST' });
-                    if (res.ok) {
-                        alert('Libro alquilado');
-                        cargarLibros();
-                    } else {
-                        alert('Error al alquilar el libro');
-                    }
-                });
-                bookDiv.appendChild(actionIcon);
+    async function cargarPerfil() {
+        // Ejemplo: Se podría llamar a un endpoint que retorne libros alquilados y el historial
+        try {
+            const rentedResponse = await fetch(`/api/libros/porUsuario/${userLoggeado.id}`);
+            const historyResponse = await fetch(`/api/alquiler/historial?userId=${userLoggeado.id}`);
+            let rentedBooks = [];
+            let historyBooks = [];
+            if (rentedResponse.ok) {
+                rentedBooks = await rentedResponse.json();
             }
-        } else {
-            // El libro ya está alquilado
-            // Solo el usuario que lo alquiló puede devolverlo
-            if (userLoggeado && libro.user.id === userLoggeado.id) {
-                actionIcon.textContent = '↩'; // Icono para devolver
-                actionIcon.title = 'Devolver';
-                actionIcon.addEventListener('click', async () => {
-                    const res = await fetch(`/api/alquiler/devolver?libroId=${libro.id}&userId=${userLoggeado.id}`, { method: 'POST' });
-                    if (res.ok) {
-                        alert('Libro devuelto');
-                        cargarLibros();
-                    } else {
-                        alert('Error al devolver el libro');
-                    }
-                });
-                bookDiv.appendChild(actionIcon);
+            if (historyResponse.ok) {
+                historyBooks = await historyResponse.json();
             }
+            // Actualizar el menú de perfil
+            profileList.innerHTML = "";
+            const rentedHeader = document.createElement('li');
+            rentedHeader.innerHTML = "<strong>Alquilados:</strong>";
+            profileList.appendChild(rentedHeader);
+            rentedBooks.forEach(libro => {
+                const li = document.createElement('li');
+                li.textContent = libro.titulo;
+                profileList.appendChild(li);
+            });
+            const historyHeader = document.createElement('li');
+            historyHeader.innerHTML = "<strong>Historial:</strong>";
+            profileList.appendChild(historyHeader);
+            historyBooks.forEach(libro => {
+                const li = document.createElement('li');
+                li.textContent = libro.titulo;
+                profileList.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Error al cargar perfil:', error);
         }
-
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'book-info';
-        const titleEl = document.createElement('div');
-        titleEl.className = 'book-title';
-        titleEl.textContent = libro.titulo;
-        const authorEl = document.createElement('div');
-        authorEl.className = 'book-author';
-        authorEl.textContent = libro.autor;
-        const yearEl = document.createElement('div');
-        yearEl.className = 'book-year';
-        yearEl.textContent = libro.anioPublicacion;
-        infoDiv.appendChild(titleEl);
-        infoDiv.appendChild(authorEl);
-        infoDiv.appendChild(yearEl);
-        bookDiv.appendChild(infoDiv);
-        bookshelf.appendChild(bookDiv);
     }
+
     const offsetInput = document.getElementById('offset-endpoint');
     const offsetBtn = document.getElementById('offset-btn');
     offsetBtn.addEventListener('click', async () => {
@@ -382,15 +460,9 @@
                 alert('Error al obtener la lista de libros');
                 return;
             }
-
-            // Await response.json() to properly parse the JSON
             const data = await response.json();
-            console.log(data);  // Debugging: Check what data is received
-
-            // Limpiar la estantería antes de agregar los nuevos libros
+            console.log(data);
             bookshelf.innerHTML = '';
-
-            // Verificar si es un solo libro u una lista
             if (Array.isArray(data)) {
                 data.forEach(libro => renderizarLibro(libro));
             } else if (data && typeof data === 'object') {
@@ -404,7 +476,6 @@
             alert('Error en la petición del offset endpoint');
         }
     });
-
 </script>
 </body>
 </html>
